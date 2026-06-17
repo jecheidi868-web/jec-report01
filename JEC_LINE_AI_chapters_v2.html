@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEC 2.0 · 章節09-10 · LINE訊息管理 + AI效益評估</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.13);
+  --dark:#0E0E0E;--dark2:#141414;--dark3:#1C1C1C;--dark4:#232323;
+  --t1:#F0EDE6;--t2:#A8A49C;--t3:#6B6760;
+  --teal:#4ECDC4;--coral:#E8754A;--purple:#9B7FD4;--green:#6BBF7A;
+  --border:rgba(201,168,76,0.18);
+}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--dark);color:var(--t1);font-size:14px;line-height:1.65}
+.s{padding:52px 48px;border-top:1px solid var(--border)}
+.s-alt{background:var(--dark2)}
+.lbl{font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.ttl{font-size:22px;font-weight:700;color:var(--t1);margin-bottom:6px}
+.sub{font-size:12px;color:var(--t2);margin-bottom:28px}
+
+/* ── 起承轉合論述區塊 ── */
+.narrative-wrap{margin-bottom:32px}
+.narrative-block{margin-bottom:0}
+.narrative-step{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:0;
+  position:relative;
+}
+.narrative-step:not(:last-child) .n-left::after{
+  content:'';position:absolute;
+  left:23px;top:52px;bottom:0;
+  width:1px;background:var(--border);
+}
+.n-left{
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding-top:4px;
+  position:relative;
+}
+.n-marker{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+  flex-shrink:0;border:1px solid;
+  background:var(--dark);
+  z-index:1;
+}
+.n-right{padding:0 0 32px 20px}
+.n-tag{
+  font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:8px;display:inline-block;
+  padding:2px 10px;border-radius:20px;
+}
+.n-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:10px;line-height:1.3}
+.n-body{font-size:13px;color:var(--t2);line-height:1.85}
+.n-body strong{color:var(--t1)}
+.n-body em{color:var(--gold);font-style:normal}
+
+/* ── 分界線 ── */
+.pivot-banner{
+  background:var(--gold-dim);border:1px solid var(--gold);
+  border-radius:10px;padding:18px 22px;margin-bottom:28px;
+  font-size:13px;color:var(--t1);line-height:1.75;
+}
+.pivot-banner strong{color:var(--gold)}
+
+/* ── 兩條線 ── */
+.two-lines{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.line-card{background:var(--dark3);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+.line-hd{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.line-title{font-size:13px;font-weight:700;color:var(--t1)}
+.line-dir{font-size:10px;color:var(--t3);margin-top:2px}
+.line-body{padding:14px 18px}
+.kw-row{display:flex;align-items:flex-start;gap:8px;background:var(--dark4);border-radius:7px;padding:8px 10px;margin-bottom:5px}
+.kw-emoji{font-size:13px;flex-shrink:0;width:18px}
+.kw-word{font-size:11px;font-weight:700;color:var(--gold);font-family:'Courier New',monospace;flex-shrink:0;min-width:44px}
+.kw-arr{font-size:11px;color:var(--t3);flex-shrink:0}
+.kw-desc{font-size:10px;color:var(--t2);line-height:1.4}
+.q-scenario{background:var(--dark4);border-radius:7px;padding:9px 12px;margin-bottom:6px}
+.q-input{font-size:11px;color:var(--teal);font-family:'Courier New',monospace;margin-bottom:3px}
+.q-output{font-size:10px;color:var(--t2);padding-left:10px;border-left:1px solid var(--border)}
+
+/* ── 推進順序 ── */
+.steps{display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+.step-item{display:flex;gap:12px;background:var(--dark3);border-radius:10px;padding:13px 16px;border:1px solid var(--border);align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:1px solid}
+.step-title{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.step-desc{font-size:11px;color:var(--t2);line-height:1.5}
+.step-tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:20px;margin-top:4px;letter-spacing:.06em}
+
+/* ── 效益 ── */
+.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.benefit-card{background:var(--dark3);border-radius:10px;padding:16px;border:1px solid var(--border)}
+.benefit-dept{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
+.benefit-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:9px}
+.benefit-item{font-size:11px;color:var(--t2);padding-left:13px;position:relative;margin-bottom:4px;line-height:1.5}
+.benefit-item::before{content:'→';position:absolute;left:0;color:var(--teal)}
+
+/* ── 時程 ── */
+.gantt-wrap{background:var(--dark3);border-radius:12px;border:1px solid var(--border);padding:18px;margin-bottom:22px}
+.gantt-row{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;margin-bottom:8px}
+.gantt-label{font-size:11px;color:var(--t2);line-height:1.4}
+.gantt-label strong{color:var(--t1);display:block;font-size:11px}
+.gantt-bar-area{position:relative;height:26px}
+.gantt-bar{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 8px;font-size:9px;font-weight:500;position:absolute;white-space:nowrap}
+.gantt-div{border:none;border-top:1px solid var(--border);margin:8px 0}
+.gantt-hdr{display:grid;grid-template-columns:130px 1fr;gap:10px;margin-bottom:10px}
+.gantt-hdr-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--t3)}
+
+/* ── ROI ── */
+.roi-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.roi-table th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:7px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.roi-table td{font-size:11px;color:var(--t2);padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.roi-table td:first-child{color:var(--t1);font-weight:500}
+.roi-table td.hl{color:var(--green);font-weight:700}
+.roi-table tr:last-child td{border-bottom:none}
+
+/* ── 呼嚕需求 ── */
+.guru-box{background:var(--dark3);border-radius:12px;border:1px solid rgba(155,127,212,.3);padding:20px}
+.guru-title{font-size:13px;font-weight:700;color:var(--purple);margin-bottom:12px}
+.guru-item{font-size:11px;color:var(--t2);padding-left:14px;position:relative;margin-bottom:7px;line-height:1.5}
+.guru-item::before{content:'▸';position:absolute;left:0;color:var(--purple)}
+
+@media(max-width:640px){
+  .s{padding:36px 20px}
+  .two-lines,.benefit-grid{grid-template-columns:1fr}
+  .narrative-step{grid-template-columns:36px 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 09 LINE 訊息管理 ══ -->
+<div class="s">
+  <div class="lbl">09 · LINE 訊息管理架構</div>
+  <div class="ttl">資訊不是丟了，是從一開始就走錯了地方</div>
+  <div class="sub">300+ 個群組背後，真正的問題不是工具，是架構</div>
+
+  <!-- 起承轉合 -->
+  <div class="narrative-wrap">
+
+    <!-- 起 -->
+    <div class="narrative-step">
+      <div class="n-left">
+        <div class="n-marker" style="border-color:var(--coral);color:var(--coral)">起</div>
+      </div>
+      <div class="n-right">
+        <div class="n-tag" style="background:rgba(232,117,74,.12);color:var(--coral)">現象</div>
+        <div class="n-title">JEC 有 300 個以上的 LINE 群組同時在運作</div>
+        <div class="n-body">
+          含公司內部 12 個常用群組、進行中的客戶案件群、以及完工後持續維護的客戶群，總數超過 300 個。
+          <br><br>
+          這個數字本身不是問題。現代商業運作本來就需要大量的即時溝通。但如果仔細去看這 300 個群組裡在流動的內容，會發現一件讓人不安的事——
+          <br><br>
+          <strong>每一個群組，都同時承擔著它沒有被設計來承擔的角色。</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 承 -->
+    <div class="narrative-step">
+      <div class="n-left">
+        <div class="n-marker" style="border-color:var(--gold);color:var(--gold)">承</div>
+      </div>
+      <div class="n-right">
+        <div class="n-tag" style="background:var(--gold-dim);color:var(--gold)">問題定性</div>
+        <div class="n-title">LINE 正在做四件它沒有被設計來做的事</div>
+        <div class="n-body">
+          LINE 群組的本質是<strong>即時溝通工具</strong>。但 JEC 現在把它同時當成了：
+          <br><br>
+          <strong>紀錄工具</strong> — 業主確認的截圖存在 LINE 對話裡<br>
+          <strong>任務管理工具</strong> — 待辦事項在群組裡發出去就算交辦<br>
+          <strong>檔案儲存工具</strong> — 報價單、發包圖、材料照片都在聊天室<br>
+          <strong>進度追蹤工具</strong> — 工程進度靠每天在群裡問
+          <br><br>
+          一個工具同時做四件事，每一件都做不好。訊息漏接不是因為大家不認真，而是因為<em>人的注意力沒有辦法在 300 個同時流動的對話裡保持追蹤</em>。
+          <br><br>
+          <strong>這不是執行問題，這是架構問題。</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 轉 -->
+    <div class="narrative-step">
+      <div class="n-left">
+        <div class="n-marker" style="border-color:var(--teal);color:var(--teal)">轉</div>
+      </div>
+      <div class="n-right">
+        <div class="n-tag" style="background:rgba(78,205,196,.1);color:var(--teal)">重新定義方向</div>
+        <div class="n-title">解法不是「怎麼從 LINE 撈訊息」</div>
+        <div class="n-body">
+          面對這個問題，直覺反應是：「那我們想辦法把 LINE 訊息蒐集起來」。但這個方向從根本上就錯了。
+          <br><br>
+          因為 LINE 訊息之所以需要被「撈」，正是因為它不該在那裡。把「撈」做得再好，也只是在一個不對的地方打補丁。
+          <br><br>
+          <em>真正的解法是：讓重要資訊從一開始就不需要在 LINE 裡找。</em>
+          <br><br>
+          把 LINE 還原成它本來的角色——<strong>即時溝通與通知</strong>。讓正式的資訊走正式的地方。業主確認、工程進度、報價紀錄、任務交辦，這些都不應該活在聊天室裡，它們應該在一個有結構、可追蹤、可查詢的系統內。
+        </div>
+      </div>
+    </div>
+
+    <!-- 合 -->
+    <div class="narrative-step">
+      <div class="n-left">
+        <div class="n-marker" style="border-color:var(--green);color:var(--green)">合</div>
+      </div>
+      <div class="n-right">
+        <div class="n-tag" style="background:rgba(107,191,122,.12);color:var(--green)">解法方向</div>
+        <div class="n-title">分兩條線，同步推進</div>
+        <div class="n-body">
+          考量 JEC 目前正處於系統建置的轉型期，我們不可能一夕之間改變所有人的工作習慣。因此採取<strong>雙線並行</strong>的策略：
+          <br><br>
+          <strong>第一條線 — 新案件從現在起走正確流程</strong><br>
+          PM 立案後，所有正式資訊走 Notion。業主確認、工進更新、報價確認都在 Notion 完成。LINE 只做即時溝通，不做紀錄。從現在開始建立正確習慣，讓新案件不再製造新的資訊黑洞。
+          <br><br>
+          <strong>第二條線 — 轉型期間的橋接機制</strong><br>
+          在舊習慣尚未完全轉移之前，由 AI小秘 LINE Bot 把群組內的關鍵訊息通知到 Notion 內，確保轉型期間重要資訊不漏接，讓系統與人的節奏同步調整。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 轉折強調 -->
+  <div class="pivot-banner">
+    <strong>核心原則：</strong>LINE 是通知工具，Notion 是紀錄工具。兩個工具各司其職，資訊才能真正被管理，而不是被淹沒。
+  </div>
+
+  <!-- 兩條線 -->
+  <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:14px">兩條線的具體執行方式</div>
+  <div class="two-lines">
+    <div class="line-card">
+      <div class="line-hd">
+        <div style="font-size:20px">📥</div>
+        <div>
+          <div class="line-title">第一條線：新案件走正確流程</div>
+          <div class="line-dir">從現在開始 · PM 主導 · Notion 為主</div>
+        </div>
+      </div>
+      <div class="line-body">
+        <div style="font-size:10px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">資訊分流原則</div>
+        <div class="kw-row"><div class="kw-emoji">✅</div><div class="kw-word">確認</div><div class="kw-arr">→</div><div class="kw-desc">業主確認紀錄在 Notion 完成，永久留存，版本可追溯</div></div>
+        <div class="kw-row"><div class="kw-emoji">📋</div><div class="kw-word">報價</div><div class="kw-arr">→</div><div class="kw-desc">報價資訊進採購模組，自動通知對應人員</div></div>
+        <div class="kw-row"><div class="kw-emoji">🔧</div><div class="kw-word">工進</div><div class="kw-arr">→</div><div class="kw-desc">工程進度在 Notion 更新，PM 與總監即時掌握</div></div>
+        <div class="kw-row"><div class="kw-emoji">❗</div><div class="kw-word">待辦</div><div class="kw-arr">→</div><div class="kw-desc">任務卡片在 Notion 建立，指定負責人，有追蹤紀錄</div></div>
+        <div class="kw-row"><div class="kw-emoji">💰</div><div class="kw-word">請款</div><div class="kw-arr">→</div><div class="kw-desc">請款節點連動行政會計，不需人工詢問</div></div>
+        <div class="kw-row"><div class="kw-emoji">📁</div><div class="kw-word">附件</div><div class="kw-arr">→</div><div class="kw-desc">檔案統一上雲端，Notion 建立索引，不散落在群組</div></div>
+        <div style="margin-top:10px;background:var(--dark4);border-radius:6px;padding:9px 11px;font-size:10px;color:var(--t3);line-height:1.6">
+          <span style="color:var(--green)">LINE 的角色：</span>只做即時通知與即時溝通。重要資訊不在 LINE 裡產生，LINE 只是收到通知的管道。
+        </div>
+      </div>
+    </div>
+
+    <div class="line-card">
+      <div class="line-hd">
+        <div style="font-size:20px">🔔</div>
+        <div>
+          <div class="line-title">第二條線：AI小秘橋接通知機制</div>
+          <div class="line-dir">轉型期橋接 · AI小秘 LINE Bot 通知到 Notion 內</div>
+        </div>
+      </div>
+      <div class="line-body">
+        <div style="font-size:10px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">查詢與回報情境</div>
+        <div class="q-scenario"><div class="q-input">現場工務：「查 松下案 廠商」</div><div class="q-output">AI小秘回覆：廠商名稱、電話、聯繫方式、付款條件</div></div>
+        <div class="q-scenario"><div class="q-input">PM：「查 松下案 工進」</div><div class="q-output">AI小秘回覆：目前工程進度、預計完工日、待辦工項</div></div>
+        <div class="q-scenario"><div class="q-input">總監：「待審」</div><div class="q-output">AI小秘回覆：所有待審批項目清單（提交人+時間+摘要）</div></div>
+        <div class="q-scenario"><div class="q-input">行政會計：「查 松下案 請款」</div><div class="q-output">AI小秘回覆：付款節點狀態、尾款金額、合約條件</div></div>
+        <div class="q-scenario"><div class="q-input">採購：「查 木作 廠商」</div><div class="q-output">AI小秘回覆：A級木作廠商清單、聯絡人、最近合作案件</div></div>
+        <div style="margin-top:10px;background:var(--dark4);border-radius:6px;padding:9px 11px;font-size:10px;color:var(--t3);line-height:1.6">
+          <span style="color:var(--purple)">定位：</span>這條線是轉型期的橋接機制。當系統使用習慣建立後，這條線會自然退場，成為純查詢工具。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 推進順序 -->
+  <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">建議推進順序</div>
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num" style="border-color:var(--coral);color:var(--coral)">1</div>
+      <div>
+        <div class="step-title">本週 — 先在營運整合群組建立正確流程示範</div>
+        <div class="step-desc">三人群組（總監、特助、你）率先實踐：正式資訊走 Notion，LINE 只做即時溝通。讓最核心的人先感受到資訊不再混亂的差異。</div>
+        <span class="step-tag" style="background:rgba(232,117,74,.15);color:var(--coral)">立即執行</span>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="border-color:var(--gold);color:var(--gold)">2</div>
+      <div>
+        <div class="step-title">下週二 — 呼嚕會議提出 AI小秘查詢功能需求</div>
+        <div class="step-desc">請呼嚕評估 AI小秘 LINE Bot 從 Notion 調閱資料並回覆的可行性、建置時間與費用。以上五個查詢情境作為需求說明依據。</div>
+        <span class="step-tag" style="background:var(--gold-dim);color:var(--gold)">需呼嚕評估</span>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="border-color:var(--green);color:var(--green)">3</div>
+      <div>
+        <div class="step-title">七月系統上線後 — 三人小組完整驗證一個月</div>
+        <div class="step-desc">在營運整合群組完整跑一個月，確認兩條線都穩定運作。讓系統效益自然說服其他同仁，從內部示範帶動全員跟進，不需強制推行。</div>
+        <span class="step-tag" style="background:rgba(107,191,122,.12);color:var(--green)">七月後推進</span>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num" style="border-color:var(--purple);color:var(--purple)">4</div>
+      <div>
+        <div class="step-title">七月後 — 快捷鍵選單確認後，逐步推廣至其他群組</div>
+        <div class="step-desc">依優先順序加入：各案件群 → 部門群 → 廠商群。300個群組不需要全部覆蓋，核心群組覆蓋後，重要資訊自然不再漏接。</div>
+        <span class="step-tag" style="background:rgba(155,127,212,.12);color:var(--purple)">持續擴展</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 10 效益與時程評估 ══ -->
+<div class="s s-alt">
+  <div class="lbl">10 · AI 執行效益與時程評估</div>
+  <div class="ttl">投入多少，換回多少</div>
+  <div class="sub">系統整合 + AI小秘通知機制的具體效益預估，供決策參考</div>
+
+  <div class="benefit-grid">
+    <div class="benefit-card">
+      <div class="benefit-dept">設計部</div>
+      <div class="benefit-title">業主確認不再漏</div>
+      <div class="benefit-item">確認紀錄從 LINE 截圖移至系統，永久可查</div>
+      <div class="benefit-item">重複被問頻率預估降低 70%</div>
+      <div class="benefit-item">設計師每週省下約 2-3 小時重複溝通</div>
+      <div class="benefit-item">版本混亂問題從根源解決</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-dept">採購 × 行政會計</div>
+      <div class="benefit-title">請款不再問三層</div>
+      <div class="benefit-item">工進達節點自動通知，取代三層延遲</div>
+      <div class="benefit-item">結案待請款漏單風險大幅降低</div>
+      <div class="benefit-item">行政會計每週省下約 3-4 小時追蹤</div>
+      <div class="benefit-item">對帳效率提升，減少文件退回重工</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-dept">現場工務 × 管理層</div>
+      <div class="benefit-title">外勤查詢秒回覆</div>
+      <div class="benefit-item">廠商聯繫方式不需打電話問辦公室</div>
+      <div class="benefit-item">工進狀態即時可查，前後台資訊同步</div>
+      <div class="benefit-item">總監從「等人回報」變成「主動查看」</div>
+      <div class="benefit-item">管理層每週省下約 2 小時資訊收集</div>
+    </div>
+  </div>
+
+  <div class="gantt-wrap">
+    <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:14px">執行時程總覽</div>
+    <div class="gantt-hdr">
+      <div></div>
+      <div class="gantt-hdr-labels">
+        <span>6月第3週</span><span>6月第4週</span><span>7月第1週</span><span>7月第2-4週</span><span>8月後</span>
+      </div>
+    </div>
+    <div class="gantt-row"><div class="gantt-label"><strong>正確流程建立</strong>新案件走 Notion</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:0;width:20%;background:var(--coral);color:#fff">啟動</div><div class="gantt-bar" style="left:20%;width:80%;background:rgba(107,191,122,.2);color:var(--green);border:1px solid var(--green)">持續運行</div></div></div>
+    <hr class="gantt-div">
+    <div class="gantt-row"><div class="gantt-label"><strong>呼嚕需求評估</strong>AI小秘查詢功能</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:20%;width:18%;background:var(--gold);color:var(--dark)">6/24 會議</div></div></div>
+    <hr class="gantt-div">
+    <div class="gantt-row"><div class="gantt-label"><strong>AI小秘通知機制</strong>查詢功能建置</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:40%;width:30%;background:var(--purple);color:#fff">建置測試</div><div class="gantt-bar" style="left:70%;width:30%;background:rgba(155,127,212,.2);color:var(--purple);border:1px solid var(--purple)">優化運行</div></div></div>
+    <hr class="gantt-div">
+    <div class="gantt-row"><div class="gantt-label"><strong>三人小組驗證</strong>營運整合群組</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:40%;width:60%;background:rgba(78,205,196,.15);color:var(--teal);border:1px solid var(--teal)">持續測試優化</div></div></div>
+    <hr class="gantt-div">
+    <div class="gantt-row"><div class="gantt-label"><strong>快捷鍵選單</strong>Rich Menu</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:60%;width:20%;background:var(--teal);color:var(--dark)">設計執行</div><div class="gantt-bar" style="left:80%;width:20%;background:rgba(78,205,196,.15);color:var(--teal);border:1px solid var(--teal)">上線</div></div></div>
+    <hr class="gantt-div">
+    <div class="gantt-row"><div class="gantt-label"><strong>其他群組推廣</strong>部門 / 案件群</div><div class="gantt-bar-area"><div class="gantt-bar" style="left:80%;width:20%;background:rgba(107,191,122,.15);color:var(--green);border:1px solid var(--green)">逐步推廣</div></div></div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">投入成本 vs 效益評估</div>
+  <table class="roi-table">
+    <thead><tr><th>項目</th><th>投入成本</th><th>預估效益</th><th>時間點</th></tr></thead>
+    <tbody>
+      <tr><td>正確流程建立</td><td>習慣養成，無額外費用</td><td class="hl">立即見效</td><td>本週</td></tr>
+      <tr><td>呼嚕評估 AI小秘查詢</td><td>會議時間，待報價</td><td>確認可行性與費用</td><td>6/24 會議</td></tr>
+      <tr><td>AI小秘通知機制建置</td><td>待呼嚕報價（預估 1-3 萬）</td><td class="hl">外勤查詢效率 ×10</td><td>七月</td></tr>
+      <tr><td>快捷鍵選單設計</td><td>設計時間，小額開發費</td><td>使用門檻降低，採用率提升</td><td>七月後</td></tr>
+      <tr><td>LINE 官方帳號擴展</td><td>月費約 800-1,200 元</td><td>全公司群組覆蓋</td><td>系統穩定後</td></tr>
+    </tbody>
+  </table>
+
+  <div class="guru-box">
+    <div class="guru-title">📋 給呼嚕的具體評估需求（6/24 會議使用）</div>
+    <div class="guru-item">希望 AI小秘 LINE Bot 能從 Notion 調閱案件資料並在群組內回覆，請評估需要哪些資料庫配合開放</div>
+    <div class="guru-item">查詢情境包含：廠商資訊、工進狀態、待審批項目、請款節點，共五個情境（詳見章節09示範）</div>
+    <div class="guru-item">目前已有 LINE 官方帳號（AI小秘）與相關自動化工具，請評估最適合的整合方式</div>
+    <div class="guru-item">請提供：可行性評估、建置時間、費用報價、後續維護方式</div>
+    <div class="guru-item">目標：七月 Notion 系統上線後同步啟動，先從三人群組（總監、特助、營運整合）開始驗證，確認穩定後再推廣</div>
+  </div>
+</div>
+
+<div style="padding:24px 48px;background:var(--dark2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="font-size:14px;font-weight:700;color:var(--gold)">JEC 2.0 · 營運整合企劃</div>
+  <div style="font-size:11px;color:var(--t3)">讓設計落地，讓空間說話，讓品牌發光。</div>
+  <div style="font-size:11px;color:var(--t3)">2026年6月 · 公司內部討論版</div>
+</div>
+
+</body>
+</html>
